@@ -1,5 +1,6 @@
 package com.qacart.todo.testCases;
 
+import com.qacart.todo.models.User;
 import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 
@@ -7,18 +8,23 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class UserTest {
-    String body = "{\n" +
-            "    \"firstName\": \"Hosam\",\n" +
-            "    \"lastName\": \"Elsheikh\",\n" +
-            "    \"email\": \"HosamElsheikh32@gmail.com\",\n" +
-            "    \"password\": \"12345678\"\n" +
-            "}";
+//    String body = "{\n" +
+//            "    \"firstName\": \"Hosam\",\n" +
+//            "    \"lastName\": \"Elsheikh\",\n" +
+//            "    \"email\": \"HosamElsheikh32@gmail.com\",\n" +
+//            "    \"password\": \"12345678\"\n" +
+//            "}";
     @Test
     public void shouldRegister(){
+        User user = new User("Hosam", "Elsheikh", "test@email.com", "123456789");
+//        user.setFirstName("Hosam");
+//        user.setLastName("Elsheikh");
+//        user.setEmail("wow@xd.com");
+//        user.setPassword("1234567890");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
         .when()
                 .post("/api/v1/users/register")
         .then()
@@ -29,16 +35,17 @@ public class UserTest {
 
     @Test
     public void shouldFailToRegisterTheSameEmail(){
-        String body = "{\n" +
-                "    \"firstName\": \"Hosam\",\n" +
-                "    \"lastName\": \"Elsheikh\",\n" +
-                "    \"email\": \"HosamElsheikh32@gmail.com\",\n" +
-                "    \"password\": \"12345678\"\n" +
-                "}";
+//        String body = "{\n" +
+//                "    \"firstName\": \"Hosam\",\n" +
+//                "    \"lastName\": \"Elsheikh\",\n" +
+//                "    \"email\": \"HosamElsheikh32@gmail.com\",\n" +
+//                "    \"password\": \"12345678\"\n" +
+//                "}";
+        User user = new User("Hosam", "Elsheikh", "test@email.com", "123456789");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
         .when()
                 .post("/api/v1/users/register")
         .then()
@@ -49,14 +56,15 @@ public class UserTest {
 
     @Test
     public void shoudLogin(){
-        String body = "{\n" +
-                "    \"email\": \"HosamElsheikh@gmail.com\",\n" +
-                "    \"password\": \"12345678\"\n" +
-                "}";
+//        String body = "{\n" +
+//                "    \"email\": \"HosamElsheikh@gmail.com\",\n" +
+//                "    \"password\": \"12345678\"\n" +
+//                "}";
+        User user = new User("test@email.com", "123456789");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
         .when()
                 .post("/api/v1/users/login")
         .then()
@@ -68,14 +76,16 @@ public class UserTest {
 
     @Test
     public void shouldFailToLoginWithIncorrectPassword(){
-        String body = "{\n" +
-                "    \"email\": \"HosamElsheikh@gmail.com\",\n" +
-                "    \"password\": \"123456781\"\n" +
-                "}";
+//        String body = "{\n" +
+//                "    \"email\": \"HosamElsheikh@gmail.com\",\n" +
+//                "    \"password\": \"123456781\"\n" +
+//                "}";
+        User user = new User("test@email.com", "1234567893");
+
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
         .when()
                 .post("/api/v1/users/login")
         .then()
