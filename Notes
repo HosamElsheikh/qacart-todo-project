@@ -10,3 +10,9 @@ Mistakes with current design:
 4)  We can use the following annotation in the POJO classes to avoid sending NULL keys in the request: @JsonInclude(JsonInclude.Include.NON_NULL)
 5)  Boolean variables have a default false value which means it will be sent by the jackson in the request even if you don't want to send it.
     To solve it:     @JsonInclude(JsonInclude.Include.NON_DEFAULT) On the variable level
+    However, this will cause an issue with sending a default value.
+    To solve it:    Use Boolean data type and not the JSONInclude.
+    This also applies for integers.
+
+6) We can make an assertion statically for better readability of the assertions.
+7)
