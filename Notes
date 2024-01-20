@@ -38,3 +38,12 @@ For test cases that rely on previous steps, we can create steps package for it.
 1) It is better to generate a route class for the URLs.
 ======================================================================================
 Build a class for the error message instead of hard coding them.
+======================================================================================
+Build a request specification
+It includes the base URI and the content type
+We can also add headers from here
+======================================================================================
+We can run the tests from Maven Command Line
+Maven detects all test files ending in "test"
+mvn clean test
+======================================================================================
