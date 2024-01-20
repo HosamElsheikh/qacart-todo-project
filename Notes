@@ -15,4 +15,26 @@ Mistakes with current design:
     This also applies for integers.
 
 6) We can make an assertion statically for better readability of the assertions.
-7)
+
+===================================================================================
+How to deserialize the JSON response to avoid hardcoding the assertions:
+
+1)  We use the following:   User returnedUser = response.body().as(User.class);
+2) TO deserialize the error message, It is better to build a POJO class for the error message
+3) We will solve the issue of getting a parameter that is not initially sent in the request without hardcoding it.
+
+==================================================================================
+For a better framework build, we add the API requests in a separate class in a different package
+
+1) We create methods for the given() when() and then() and call these methods from the test cases.
+
+======================================================================================
+For test cases that rely on previous steps, we can create steps package for it.
+
+1) We can use the faker dependancy to generate user names and passwords.
+2) Check for the implementation done for the code here.
+
+======================================================================================
+1) It is better to generate a route class for the URLs.
+======================================================================================
+Build a class for the error message instead of hard coding them.

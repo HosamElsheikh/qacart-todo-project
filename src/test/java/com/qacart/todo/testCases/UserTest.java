@@ -1,7 +1,10 @@
 package com.qacart.todo.testCases;
 
+import com.qacart.todo.apis.UserAPIs;
+import com.qacart.todo.data.ErrorMessages;
+import com.qacart.todo.models.Error;
 import com.qacart.todo.models.User;
-import io.restassured.http.ContentType;
+import com.qacart.todo.steps.UserSteps;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
@@ -10,104 +13,55 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class UserTest {
-//    String body = "{\n" +
-//            "    \"firstName\": \"Hosam\",\n" +
-//            "    \"lastName\": \"Elsheikh\",\n" +
-//            "    \"email\": \"HosamElsheikh32@gmail.com\",\n" +
-//            "    \"password\": \"12345678\"\n" +
-//            "}";
     @Test
     public void shouldRegister(){
-        User user = new User("Hosam", "Elsheikh", "tesftt@efmail.com", "123456789");
-//        user.setFirstName("Hosam");
-//        user.setLastName("Elsheikh");
-//        user.setEmail("wow@xd.com");
-//        user.setPassword("1234567890");
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-        .when()
-                .post("/api/v1/users/register")
-        .then()
-                .log().all()
-                .extract().response();
+        User user = UserSteps.generateUser();
+
+        Response response = UserAPIs.register(user);
+        User returnedUser = response.body().as(User.class);
 
         assertThat(response.statusCode(), equalTo(201));
-        assertThat(response.path("firstName"), equalTo(user.getFirstName()));
-//                .assertThat().statusCode(201)
-//                .assertThat().body("firstName", equalTo("Hosam"));
+        assertThat(returnedUser.getFirstName(), equalTo(user.getFirstName()));
     }
 
     @Test
     public void shouldFailToRegisterTheSameEmail(){
-//        String body = "{\n" +
-//                "    \"firstName\": \"Hosam\",\n" +
-//                "    \"lastName\": \"Elsheikh\",\n" +
-//                "    \"email\": \"HosamElsheikh32@gmail.com\",\n" +
-//                "    \"password\": \"12345678\"\n" +
-//                "}";
-        User user = new User("Hosam", "Elsheikh", "test@email.com", "123456789");
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-        .when()
-                .post("/api/v1/users/register")
-        .then()
-                .log().all()
-                .extract().response();
 
+        User user = UserSteps.getRegisterUser();
+
+        Response response = UserAPIs.register(user);
+
+        Error returnedError = response.body().as(Error.class);
         assertThat(response.statusCode(), equalTo(400));
-        assertThat(response.path("message"), equalTo("Email is already exists in the Database"));
+        assertThat(returnedError.getMessage(), equalTo(ErrorMessages.SAME_EMAIL));
+//        assertThat(response.path("message"), equalTo("Email is already exists in the Database"));
 //                .assertThat().statusCode(400)
 //                .assertThat().body("message", equalTo("Email is already exists in the Database"));
     }
 
     @Test
-    public void shoudLogin(){
-//        String body = "{\n" +
-//                "    \"email\": \"HosamElsheikh@gmail.com\",\n" +
-//                "    \"password\": \"12345678\"\n" +
-//                "}";
-        User user = new User("test@email.com", "123456789");
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-        .when()
-                .post("/api/v1/users/login")
-        .then()
-                .log().all()
-                .extract().response();
+    public void shoudLogin() {
+        User user = UserSteps.getRegisterUser();
+        User loginData = new User(user.getEmail(), user.getPassword());
+        Response response = UserAPIs.login(loginData);
+
+        User returnedUser = response.body().as(User.class);
         assertThat(response.statusCode(), equalTo(200));
-        assertThat(response.path("firstName"), equalTo("Hosam"));
-        assertThat(response.path("access_token"), not(equalTo(null)));
-//                .assertThat().statusCode(200)
-//                .assertThat().body("firstName", equalTo("Hosam"))
-//                .assertThat().body("access_token", not(equalTo(null)));
+        assertThat(returnedUser.getFirstName(), equalTo(user.getFirstName()));
+        assertThat(returnedUser.getAccess_token(), not(equalTo(null)));
     }
 
     @Test
     public void shouldFailToLoginWithIncorrectPassword(){
-//        String body = "{\n" +
-//                "    \"email\": \"HosamElsheikh@gmail.com\",\n" +
-//                "    \"password\": \"123456781\"\n" +
-//                "}";
-        User user = new User("test@email.com", "1234567893");
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-        .when()
-                .post("/api/v1/users/login")
-        .then()
-                .log().all()
-                .extract().response();
+        User user = UserSteps.getRegisterUser();
+        User loginData = new User(user.getEmail(), "wrongPassword");
+
+        Response response = UserAPIs.login(loginData);
+
+        Error returnedError = response.body().as(Error.class);
+
         assertThat(response.statusCode(), equalTo(401));
-        assertThat(response.path("message"), equalTo("The email and password combination is not correct, please fill a correct email and password"));
-//                .assertThat().statusCode(401)
-//                .assertThat().body("message", equalTo("The email and password combination is not correct, please fill a correct email and password"));
+        assertThat(returnedError.getMessage(), equalTo(ErrorMessages.WRONG_CREDENTIALS));
     }
 }
