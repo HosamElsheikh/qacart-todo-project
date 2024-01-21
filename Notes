@@ -47,3 +47,7 @@ We can run the tests from Maven Command Line
 Maven detects all test files ending in "test"
 mvn clean test
 ======================================================================================
+We can add the surefire plugin to run the tests in parallel making it faster
+======================================================================================
+We can run properties to through maven project using the -Denv=value
+We will use then the function called System.getProperty("env")
