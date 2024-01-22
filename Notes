@@ -51,3 +51,16 @@ We can add the surefire plugin to run the tests in parallel making it faster
 ======================================================================================
 We can run properties to through maven project using the -Denv=value
 We will use then the function called System.getProperty("env")
+======================================================================================
+We will use Allure to build reports about our test cases
+We install it to our device and then add its dependency
+We then use the command below to create the report:
+allure serve .\allure-results\
+* We can add a description after the test annotation to display it on the allure report
+* We can change the style of the report to be pdd by making it be "Features & stories"
+We use the @Feature("txt") on the class level and @Story("txt") on the test case level.
+======================================================================================
+How to build our project on CI/CD:
+We can use the github actions to run the codes automatically on a server by Github.
+We can use some instructions on our code directly that Github will understand. The instructions should be in a file called
+".github" and inside it a folder called "workflows" and a yml file inside it
